@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MAT_CelShade
-  m_Shader: {fileID: 4800000, guid: 4b5e6c91966652a438cc696508dd44b7, type: 3}
+  m_Name: MAT_ToonWater
+  m_Shader: {fileID: 4800000, guid: b2226f3a91c6f2d4698dd94716a4c562, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -21,19 +21,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 589bb857c90b643459ed75685932442e, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Glossiness: 12
-    - _OutlineWidth: 0.11
-    - _RimAmount: 0.716
-    - _RimThreshold: 0.1
-    m_Colors:
-    - _AmbientColor: {r: 0.1981132, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0.49056602, g: 0.011569952, b: 0.011569952, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecularColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    - _Height: 0.02
+    m_Colors: []
   m_BuildTextureStacks: []

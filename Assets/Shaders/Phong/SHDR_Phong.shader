@@ -1,4 +1,3 @@
-
 Shader "Unlit/SHDR_Phong"
 {
     Properties
@@ -74,7 +73,7 @@ Shader "Unlit/SHDR_Phong"
                 float3 albedo = tex2D(_MainTex,i.uv).rgb * _Tint.rgb;
                 float3 specularTint;
                 float oneMinusReflectivity;
-                albedo = DiffuseAndSpecularFromMetallic(albedo,_Metallic,specularTint,oneMinusReflectivity);
+                albedo = DiffuseAndSpecularFromMetallic(albedo, _Metallic, specularTint, oneMinusReflectivity);
                 
                 UnityLight light;
                 light.color = lightColor;
