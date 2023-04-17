@@ -3,55 +3,86 @@ Shader "Unlit/SHDR_ToonWater"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Height("Height",Range(0.005, 2)) = 0.02
+        [HDR] _Color("Color", Color) = (1, 1, 1, 1)
+
+        _DepthFactor("Depth Factor", float) = 1.0
+        _DepthPow("Depth Pow", float) = 1.0
+
+        [HDR] _EdgeColor("Edge Color", Color) = (1, 1, 1, 1)
+        _IntersectionThreshold("Intersection threshold", Float) = 1
+        _IntersectionPow("Pow", Float) = 1
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags 
+        { 
+            "RenderType"="Transparent" 
+            "IgnoreProjector"="True" 
+            "Queue" = "Transparent" 
+        }
+        Blend SrcAlpha OneMinusSrcAlpha
         LOD 100
 
         Pass
         {
+            Tags { "LightMode" = "ForwardBase" }
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_fwdbase nolightmap nodirlightmap nodynlightmap novertexlight
 
             #include "UnityCG.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normal : NORMAL;
             };
 
             struct v2f
             {
-                float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
-                float3 normal : NORMAL;
+                float4 screenPos : TEXCOORD1;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            half _Height;
+            float4 _Color;
+            
+            UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
+            
+            float _DepthFactor;
+            fixed _DepthPow;
+
+            float4 _EdgeColor;
+            fixed _IntersectionThreshold;
+            fixed _IntersectionPow;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.normal = UnityObjectToWorldNormal(v.normal);
-                
-                o.vertex.xyz += o.normal * (sin(_Height) * frac(_Time.y));
+
+                o.screenPos = ComputeScreenPos(o.vertex);
+                COMPUTE_EYEDEPTH(o.screenPos.z);
 
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = _Color;
+
+                float sceneZ = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)));
+                float depth = sceneZ - i.screenPos.z;
+
+                fixed depthFading = saturate((abs(pow(depth, _DepthPow))) / _DepthFactor);
+                col *= depthFading;
+
+                // "foam line"
+                fixed intersect = saturate((abs(depth)) / _IntersectionThreshold);
+                col += _EdgeColor * pow(1 - intersect, 4) * _IntersectionPow;
+
                 return col;
             }
             ENDCG

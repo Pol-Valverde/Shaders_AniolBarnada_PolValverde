@@ -6,7 +6,7 @@ Shader "Unlit/SHDR_GalaxyFX"
         _FresnelCol ("Fresnel Color", Color) = (1, 1, 1, 1)
         _PanningX ("Panning X", Range(-10, 10)) = 0
         _PanningY ("Panning Y", Range(-10, 10)) = 0
-        _Smoothness("Smoothness", Range(0,1))=0.5
+        _Smoothness("Smoothness", Range(0, 1))=0.5
         _SpecularTint ("Specular", Color) = (0.5, 0.5, 0.5)
     }
     SubShader
@@ -65,7 +65,6 @@ Shader "Unlit/SHDR_GalaxyFX"
                 
                 o.screenPosition = ComputeScreenPos(o.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.screenPosition += (_PanningX, _PanningY) * frac(_Time.y);
                 return o;
             }
 
@@ -80,16 +79,12 @@ Shader "Unlit/SHDR_GalaxyFX"
                 float3 diffuse = lightColor * DotClamped(lightDir,i.normal);
                 float3 specular = _SpecularTint.rgb * lightColor * pow(DotClamped(halfVector,i.normal),_Smoothness * 100);
 
-                
-
-
-
 
                 float2 screenSpaceUV = i.screenPosition.xy / i.screenPosition.w;
                 float ratio = _ScreenParams.x / _ScreenParams.y;
                 screenSpaceUV.x *= ratio;
         
-                float4 col = tex2D(_MainTex, screenSpaceUV);
+                float4 col = tex2D(_MainTex, screenSpaceUV + float2(_PanningX, _PanningY) * _Time.y);
 
                 fixed fresnel = dot(i.viewDir * -1, i.normal);
                 fixed4 fresnelCol = lerp(_FresnelCol, col, fresnel);

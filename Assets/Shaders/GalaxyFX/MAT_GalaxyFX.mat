@@ -26,8 +26,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _PanningX: 1
-    - _PanningY: 1
+    - _PanningX: 0.1
+    - _PanningY: 0.1
     - _Smoothness: 0.066
     m_Colors:
     - _FresnelCol: {r: 1, g: 1, b: 1, a: 1}
