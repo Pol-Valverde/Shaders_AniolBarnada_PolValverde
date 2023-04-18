@@ -1,11 +1,11 @@
-Shader "Unlit/SHDR_PBR"
+Shader "Custom/SHDR_LitPBR"
 {
     Properties 
     {
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _NormalTex ("Albedo (RGB)", 2D) = "bump" {}
-        _Metallic ("Metallic", Range(0,1)) = 0.0
-        _Smoothness ("Smooothness", Range(0,1)) = 0.5
+        _NormalTex ("Normal Map", 2D) = "bump" {}
+        _Metallic ("Metallic", Range(0, 0.999)) = 0.0
+        _Smoothness ("Smooothness", Range(0.001, 1)) = 0.5
     }
 
     SubShader 
@@ -51,17 +51,26 @@ Shader "Unlit/SHDR_PBR"
 
             fixed4 frag (v2f i) : SV_Target 
             {
+                // Sample albedo texture
                 fixed4 albedo = tex2D(_MainTex, i.uv);
+                // Get metallic value
                 float metallic = _Metallic;
+                // Get smoothness value
                 float smoothness = _Smoothness;
 
                 // Compute specular
+                // get view direction
                 float3 viewDir = normalize(UnityWorldSpaceViewDir(i.vertex));
+                // get normal from normal map
                 float3 normal = UnpackNormal(tex2D(_NormalTex, i.uv));
+                // get light direction
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz - i.vertex.xyz);
+                // get half vector
                 float3 halfVec = normalize(viewDir + lightDir);
+                // compute specular
                 float3 specular = pow(saturate(dot(halfVec, normal)), smoothness) * metallic;
 
+                // Combine albedo and specular
                 return fixed4(albedo.rgb * (1.0 - metallic) + specular.rgb, albedo.a);
             }
             ENDCG
