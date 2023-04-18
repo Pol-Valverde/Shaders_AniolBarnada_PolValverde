@@ -3,9 +3,9 @@ Shader "Unlit/SHDR_Phong"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Tint("Tint", Color) = (1,1,1,1)
+        _Tint("Tint", Color) = (1, 1, 1, 1)
         _Smoothness("Smoothness", Range(0, 1)) = 0.5
-        [Gamma] _Metallic("Metallic",Range(0,1)) = 0
+        [Gamma] _Metallic("Metallic",Range(0, 1)) = 0
     }
     SubShader
     {
@@ -25,6 +25,7 @@ Shader "Unlit/SHDR_Phong"
             #pragma target 3.0
 
             #include "UnityPBSLighting.cginc"
+            #include "../Library/Phong.cginc"
             
             struct appdata
             {
@@ -54,8 +55,6 @@ Shader "Unlit/SHDR_Phong"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.worldPos = mul(unity_ObjectToWorld, o.vertex);
                 o.normal = UnityObjectToWorldNormal(v.normal);
-              
-
                 return o;
             }
 
@@ -70,7 +69,7 @@ Shader "Unlit/SHDR_Phong"
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
                 
                 float3 lightColor = _LightColor0.rgb;
-                float3 albedo = tex2D(_MainTex,i.uv).rgb * _Tint.rgb;
+                float3 albedo = tex2D(_MainTex, i.uv).rgb * _Tint.rgb;
                 float3 specularTint;
                 float oneMinusReflectivity;
                 albedo = DiffuseAndSpecularFromMetallic(albedo, _Metallic, specularTint, oneMinusReflectivity);
@@ -78,15 +77,13 @@ Shader "Unlit/SHDR_Phong"
                 UnityLight light;
                 light.color = lightColor;
                 light.dir = lightDir;
-                light.ndotl = DotClamped(i.normal,lightDir);
+                light.ndotl = DotClamped(i.normal, lightDir);
 
                 UnityIndirect indirectLight;
                 indirectLight.diffuse = 0;
 				indirectLight.specular = 0;
 
                 return UNITY_BRDF_PBS(albedo, specularTint, oneMinusReflectivity, _Smoothness, i.normal, viewDir, light, indirectLight);
-                
-                //return pow(DotClamped(halfVector, i.normal),_Smoothness * 100);
             }
             ENDCG
         }

@@ -46,7 +46,7 @@ Shader "Unlit/SHDR_VisualLandscapeDeformation"
             v2f vert (appdata v)
             {    
                 v2f o;
-                float4 heightMap = tex2Dlod(_HeightMap,float4(v.uv.xy,0,0));
+                float4 heightMap = tex2Dlod(_HeightMap, float4(v.uv.xy, 0, 0));
                 o.vertex = mul(unity_ObjectToWorld, v.vertex);
                 o.normal = UnityObjectToWorldNormal(v.normal);
 

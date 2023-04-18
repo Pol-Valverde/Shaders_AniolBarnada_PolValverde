@@ -76,8 +76,8 @@ Shader "Unlit/SHDR_GalaxyFX"
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
                 float3 halfVector = normalize(lightDir + viewDir);
                 float3 lightColor = _LightColor0.rgb;
-                float3 diffuse = lightColor * DotClamped(lightDir,i.normal);
-                float3 specular = _SpecularTint.rgb * lightColor * pow(DotClamped(halfVector,i.normal),_Smoothness * 100);
+                float3 diffuse = lightColor * DotClamped(lightDir, i.normal);
+                float3 specular = _SpecularTint.rgb * lightColor * pow(DotClamped(halfVector, i.normal), _Smoothness * 100);
 
 
                 float2 screenSpaceUV = i.screenPosition.xy / i.screenPosition.w;
@@ -89,7 +89,7 @@ Shader "Unlit/SHDR_GalaxyFX"
                 fixed fresnel = dot(i.viewDir * -1, i.normal);
                 fixed4 fresnelCol = lerp(_FresnelCol, col, fresnel);
 
-                return fresnelCol * float4(diffuse + specular,1);
+                return fresnelCol * float4(diffuse + specular, 1);
             }
             ENDCG
         }
