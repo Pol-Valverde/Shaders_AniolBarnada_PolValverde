@@ -4,9 +4,10 @@ Shader "Unlit/SHDR_VisualLandscapeDeformation"
     {
         _WallTex ("TextureWalls", 2D) = "white" {}
         _FloorTex ("TextureFloor", 2D) = "white" {}
-        _HeightMap("HeightMap",2D) = "black"{}
-        _Height("Height",Range(0.005,1)) = 0.02
-        _FallOff("FallOff",Range(0,2)) = 0.25
+        _HeightMap ("HeightMap",2D) = "black"{}
+        _Height ("Height",Range(0.005, 10)) = 2
+        _FallOff ("FallOff",Range(0, 2)) = 0.25
+        _DDist ("Derivative List", Range(0.01, 5)) = 1.0
     }
     SubShader
     {
@@ -40,23 +41,37 @@ Shader "Unlit/SHDR_VisualLandscapeDeformation"
             sampler2D _FloorTex;
             float4 _WallTex_ST;
             sampler2D _HeightMap;
+            float4 _HeightMap_ST, _HeightMap_TexelSize;
             half _Height;
             fixed _FallOff;
+            fixed _DDist;
+
+            float3 NormalsFromHeight(float4 uv, float texelSize) 
+            {     
+                float4 h;     
+                h[0] = tex2Dlod(_HeightMap, uv + float4(texelSize * float2(0, -1 / _DDist), 0, 0)).r * _Height;
+                h[1] = tex2Dlod(_HeightMap, uv + float4(texelSize * float2(-1 / _DDist, 0), 0, 0)).r * _Height;
+                h[2] = tex2Dlod(_HeightMap, uv + float4(texelSize * float2(1 / _DDist, 0), 0, 0)).r * _Height;
+                h[3] = tex2Dlod(_HeightMap, uv + float4(texelSize * float2(0, 1 / _DDist), 0, 0)).r * _Height;
+                
+                float3 n;     
+                n.z = h[3] - h[0];     
+                n.x = h[2] - h[1];     
+                n.y = 2;
+                
+                return normalize(n); 
+            } 
 
             v2f vert (appdata v)
             {    
                 v2f o;
-                float4 heightMap = tex2Dlod(_HeightMap, float4(v.uv.xy, 0, 0));
-                o.vertex = mul(unity_ObjectToWorld, v.vertex);
-                o.normal = UnityObjectToWorldNormal(v.normal);
 
-                o.vertex.xyz += o.normal * heightMap.b * _Height;
-
-                o.vertex = UnityWorldToClipPos(o.vertex);
-
-                o.uv = TRANSFORM_TEX(v.uv, _WallTex);
-
-                o.worldPosition = mul((float3x3)unity_ObjectToWorld, v.vertex);
+                float heightSample = tex2Dlod(_HeightMap, float4(v.uv, 0, 0)).x * _Height;
+                o.worldPosition = mul((float3x3)unity_ObjectToWorld, v.vertex).xyz + float4(0, heightSample, 0, 0);
+                o.vertex = UnityObjectToClipPos(v.vertex + float3(0, heightSample, 0));
+                
+                o.normal = NormalsFromHeight(float4(v.uv, 0, 0), _HeightMap_TexelSize.x);
+                o.normal = UnityObjectToWorldNormal(o.normal);
 
                 return o;
             }

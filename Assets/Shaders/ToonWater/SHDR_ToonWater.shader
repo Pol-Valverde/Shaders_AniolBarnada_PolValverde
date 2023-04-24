@@ -3,6 +3,8 @@ Shader "Unlit/SHDR_ToonWater"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _ColorA ("Water Color", Color) = (0, 0, 0, 1)
+        _ColorB ("Foam Color", Color) = (1, 1, 1, 1)
         _Speed ("Speed", Range(-10, 10)) = 1
         _Amplitude ("Amplitude", Range(0, 1)) = 0.1
     }
@@ -36,6 +38,7 @@ Shader "Unlit/SHDR_ToonWater"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _ColorA, _ColorB;
             float _Speed;
             float _Amplitude;
 
@@ -59,7 +62,8 @@ Shader "Unlit/SHDR_ToonWater"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = tex2D(_MainTex, i.uv);                
+                col = lerp(_ColorA, _ColorB, col.x);
                 return col;
             }
             ENDCG

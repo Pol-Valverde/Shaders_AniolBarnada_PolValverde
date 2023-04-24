@@ -38,7 +38,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _DDist: 0.01
     - _FallOff: 2
-    - _Height: 0.429
+    - _Height: 3.6
     m_Colors: []
   m_BuildTextureStacks: []
