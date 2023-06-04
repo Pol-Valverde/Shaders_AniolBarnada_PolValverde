@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MAT_PBR
-  m_Shader: {fileID: 4800000, guid: ad67a4e9608019b4aaaa4507e18e957b, type: 3}
+  m_Shader: {fileID: 4800000, guid: 029d784ab37c2954ba32e6589654dd28, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -20,38 +20,28 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: e3e906c7f34540b4c85403c3aae9e412, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _IrradianceMap:
-        m_Texture: {fileID: 8900000, guid: 0e8041adf03b28d4cbd2051f9ab8cf03, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 8a045cde0e7cafe418df03ee9f913e23, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 503f1f86018cebe4f88e4074a1407c09, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 503f1f86018cebe4f88e4074a1407c09, type: 3}
+        m_Texture: {fileID: 2800000, guid: c47413db801d2054986e03c051bfd8f0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _RadianceMap:
-        m_Texture: {fileID: 8900000, guid: 0e8041adf03b28d4cbd2051f9ab8cf03, type: 2}
+    - _SmoothnessTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Emissive: 0
-    - _Glossiness: 0.5
-    - _Metallic: 0.1
-    - _Metalness: 0.8
-    - _Roughness: 0.9
-    - _Smoothness: 0.5
+    - _Anisotropy: 0.5
+    - _MetallicVal: 0
+    - _NormalVal: 10
+    - _SmoothnessVal: 0.65
     m_Colors:
-    - _Albedo: {r: 1, g: 1, b: 1, a: 1}
+    - _AmbientCol: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
